@@ -1,2 +1,4 @@
-node_modules/
-.envgi
+node_modules/
+.envgi
+config.bat
+.env
