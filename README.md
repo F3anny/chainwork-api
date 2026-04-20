@@ -6,6 +6,7 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=flat&logo=postgresql&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat&logo=redis&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-000000?style=flat&logo=express&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
 
 ## 🚀 Features
 
@@ -17,8 +18,11 @@
 - **Message Queues** — Bull + Redis for non-blocking background email jobs
 - **Pagination** — efficient handling of large datasets
 - **Database Indexes** — optimized PostgreSQL queries
+- **Docker** — fully containerized, runs anywhere with one command
 
 ## 🏗️ Architecture
+
+```
 Client Request
 ↓
 Rate Limiter + Security Headers (helmet)
@@ -34,6 +38,7 @@ PostgreSQL Database
 Bull Queue → Email Worker (background) 📧
 ↓
 Response
+```
 
 ## 🛠️ Tech Stack
 
@@ -49,28 +54,61 @@ Response
 | express-rate-limit | Rate limiting |
 | express-validator | Input validation |
 | nodemailer | Email notifications |
+| Docker | Containerization |
+| Docker Compose | Multi-container orchestration |
 
 ## 📁 Project Structure
+
+```
 chainwork-api/
-src/
-cache/
-index.js        ← Redis cache helpers
-db/
-index.js        ← PostgreSQL connection
-middleware/
-auth.js         ← JWT verification
-queues/
-emailQueue.js   ← Bull email queue
-routes/
-users.js        ← auth endpoints
-jobs.js         ← job endpoints
-workers/
-emailWorker.js  ← background email processor
-.env.example
-index.js
-README.md
+├── src/
+│   ├── cache/
+│   │   └── index.js        ← Redis cache helpers
+│   ├── db/
+│   │   └── index.js        ← PostgreSQL connection
+│   ├── middleware/
+│   │   └── auth.js         ← JWT verification
+│   ├── queues/
+│   │   └── EmailQueue.js   ← Bull email queue
+│   ├── routes/
+│   │   ├── users.js        ← auth endpoints
+│   │   └── jobs.js         ← job endpoints
+│   └── workers/
+│       └── emailWorker.js  ← background email processor
+├── .env.example
+├── .dockerignore
+├── docker-compose.yml
+├── Dockerfile
+├── index.js
+└── README.md
+```
 
 ## ⚙️ Setup
+
+### 🐳 Run with Docker (recommended)
+
+**1. Clone the repo**
+```bash
+git clone https://github.com/YOURUSERNAME/chainwork-api.git
+cd chainwork-api
+```
+
+**2. Set up environment variables**
+```bash
+cp .env.example .env
+```
+
+**3. Start everything with one command**
+```bash
+docker compose up --build
+```
+
+That's it! Docker will spin up:
+- ✅ Your Express API on port 3000
+- ✅ PostgreSQL database on port 5432
+- ✅ Redis cache on port 6379
+
+### 💻 Run manually (without Docker)
 
 **1. Clone the repo**
 ```bash
@@ -89,9 +127,12 @@ cp .env.example .env
 ```
 
 Fill in your `.env`:
+```
 DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/jobboard
 JWT_SECRET=yoursecretkey
 PORT=3000
+REDIS_URL=redis://localhost:6379
+```
 
 **4. Set up the database**
 ```bash
@@ -129,11 +170,7 @@ CREATE TABLE applications (
 );
 ```
 
-**5. Start Redis**
-
-Make sure Redis is running locally on port 6379.
-
-**6. Run the server**
+**5. Make sure Redis is running locally on port 6379, then:**
 ```bash
 npm run dev
 ```
@@ -156,8 +193,10 @@ npm run dev
 | DELETE | `/jobs/:id` | Delete a job | ✅ |
 
 ### Pagination
+```
 GET /jobs?page=1&limit=10
 GET /jobs?page=2&limit=5
+```
 
 ## 🔒 Security
 
@@ -171,6 +210,8 @@ GET /jobs?page=2&limit=5
 ## 📧 Background Jobs
 
 Job applications trigger an automatic email confirmation sent via Bull message queue — the API responds instantly without waiting for the email to send.
+
+```
 POST /jobs/:id/apply
 ↓
 Application saved ✅
@@ -180,6 +221,25 @@ Email job added to Bull queue (1ms)
 API responds instantly
 ↓
 [Background] Worker sends confirmation email 📧
+```
+
+## 🐳 Docker
+
+The project is fully containerized. Three containers run together via Docker Compose:
+
+| Container | Image | Port |
+|---|---|---|
+| api | custom (Node.js 18) | 3000 |
+| db | postgres:15 | 5432 |
+| redis | redis:7 | 6379 |
+
+Useful commands:
+```bash
+docker compose up --build    # start everything
+docker compose down          # stop everything
+docker compose logs -f       # watch live logs
+docker compose up -d         # run in background
+```
 
 ## 🚀 Coming Soon
 
