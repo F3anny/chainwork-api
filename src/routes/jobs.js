@@ -3,7 +3,7 @@ const router = express.Router()
 const db = require('../db')
 const auth = require('../middleware/auth')
 const { body, validationResult } = require('express-validator')
-const emailQueue = require('../queues/emailQueue')
+const emailQueue = require('../queues/EmailQueue')
 const { setCache, getCache, deleteCache } = require('../cache')
 
 const validate = (req, res, next) => {

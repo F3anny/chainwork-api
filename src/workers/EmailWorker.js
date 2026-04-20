@@ -1,4 +1,4 @@
-const emailQueue = require('../queues/emailQueue')
+const emailQueue = require('../queues/EmailQueue')
 const nodemailer = require('nodemailer')
 
 // create a fake email transporter for testing
